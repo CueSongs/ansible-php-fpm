@@ -1,0 +1,20 @@
+; {{ ansible_managed }}
+[php-fpm]
+listen = {{ php.php_fpm.listen }}
+listen.owner = {{ php.php_fpm.listen_owner }}
+listen.group = {{ php.php_fpm.listen_group }}
+listen.mode = {{ php.php_fpm.listen_mode }}
+request_terminate_timeout = {{ php.php_fpm.request_terminate_timeout }}
+user = {{ php.php_fpm.user }}
+group = {{ php.php_fpm.group }}
+pm = dynamic
+pm.max_children = {{ php.php_fpm.max_children }}
+pm.start_servers = {{ php.php_fpm.start_servers }}
+pm.min_spare_servers = {{ php.php_fpm.min_spare_servers }}
+pm.max_spare_servers = {{ php.php_fpm.max_spare_servers }}
+pm.max_requests = {{ php.php_fpm.max_requests }}
+chdir = {{ php.php_fpm.chdir }}
+access.log = /var/log/php5-access.log
+access.format = "%t \"%m %r%Q%q\" %s %{mili}dms %{kilo}Mkb %C%%"
+security.limit_extensions = .php
+php_admin_value[open_basedir] = {{ php.php_fpm.open_basedir | join(":")}}:{{ app.root }}:{{ app.web }}:/tmp

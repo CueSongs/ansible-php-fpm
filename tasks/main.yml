@@ -1,0 +1,35 @@
+---
+
+- name: Install php-fpm and deps
+  apt: name={{ item }} state=present
+  with_items: php.php_extensions
+
+- name: Start php-fpm service
+  service: name=php5-fpm state=started enabled=yes
+
+- name: Disable default pool
+  command: mv /etc/php5/fpm/pool.d/www.conf /etc/php5/fpm/pool.d/www.disabled creates=/etc/php5/fpm/pool.d/www.disabled
+  notify: restart php-fpm
+
+- name: Copy php.ini configuration
+  template: src=php.ini.j2 dest=/etc/php.ini
+  notify: restart php-fpm
+
+- name: Copy module configuration
+  template: src={{ item }}.ini.j2 dest=/etc/php5/mods-available/{{ item }}.ini
+  with_items: php.php_modules_ini
+  notify: restart php-fpm
+
+- name: Enable modules
+  command: "php5enmod {{ item }}"
+  with_items: php.php_modules_ini
+  sudo: yes
+
+- name: Copy php-fpm configuration
+  template: src=pool.conf.j2 dest=/etc/php5/fpm/pool.d/www.conf
+  notify: restart php-fpm
+
+- name: Start PHP-fpm
+  service: name=php5-fpm state=started enabled=yes
+  notify: restart php-fpm
+  sudo: yes

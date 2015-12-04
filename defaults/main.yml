@@ -1,0 +1,47 @@
+---
+
+php: {
+    php_extensions: [
+        "php5",
+        "php5-cli",
+        "php5-fpm",
+        "php5-mysql",
+        "php5-mcrypt",
+        "php5-gd",
+        "php5-curl"
+    ],
+
+    php_modules_ini: [
+
+    ],
+
+    php_ini: {
+        max_execution_time: 600,
+        memory_limit: 512MB,
+        error_reporting: "E_ALL & ~E_DEPRECATED & ~E_STRICT",
+        display_errors: On,
+        post_max_size: 8M,
+        cgi_fix_pathinfo: 0,
+        upload_max_filesize: 2M,
+        date_timezone: "UTC",
+        session_save_handler: files,
+        session_name: PHPSESSID,
+    },
+
+    php_fpm: {
+        listen: "127.0.0.1:9000",
+        listen_owner: nginx,
+        listen_group: nginx,
+        listen_mode: "0660",
+        request_terminate_timeout: 120s,
+        user: vagrant,
+        group: vagrant,
+        max_children: 75,
+        start_servers: 10,
+        min_spare_servers: 5,
+        max_spare_servers: 20,
+        max_requests: 500,
+        chdir: "/var/www",
+        open_basedir: ["/var/www"],
+    }
+}
